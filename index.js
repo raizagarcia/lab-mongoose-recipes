@@ -7,6 +7,29 @@ const data = require('./data');
 
 const MONGODB_URI = 'mongodb://localhost:27017/recipe-app';
 
+const newRecipe = {
+  "title": "Chocolate Cake",
+    "level": "Easy Peasy",
+    "ingredients": [
+      "all-purpose flour",
+      "sugar",
+      "unsweetened cocoa powder",
+      "baking powder",
+      "baking soda",
+      "salt",
+      "espresso powder",
+      "milk",
+      "oil",
+      "eggs",
+      "vanilla extract",
+      'boiling water',
+    ],
+    "cuisine": "International",
+    "dishType": "dessert",
+    "image": "https://addapinch.com/wp-content/uploads/2013/01/chocolate-cake-DSC_1788.jpg",
+    "duration": 45,
+    "creator": "Robyn Stone"
+}
 //Method 1 : Using Async Await
 
 const manageRecipes = async () => {
@@ -19,6 +42,26 @@ const manageRecipes = async () => {
     await Recipe.deleteMany();
 
     // Run your code here, after you have insured that the connection was made
+
+    //await Recipe.create(data[1]);
+    await Recipe.create(newRecipe);
+
+    const allRecipe = await Recipe.insertMany(data);
+    allRecipe.forEach((recipe)=> {
+      console.log(recipe.title)
+    })
+    
+    const updateRecipe = await Recipe.findOneAndUpdate({
+      title: "Rigatoni alla Genovese"},
+      {duration: 100},
+      {new: true},
+      )
+
+      await Recipe.deleteOne({title: "Carrot Cake"})
+      console.log('Carrot Cake was removed');
+    
+      dbConnection.disconnect();
+
   } catch (error) {
     console.log(error);
   }
@@ -29,7 +72,7 @@ manageRecipes();
 //Method 2: Using .then() method
 //If you want to use this method uncomment the code below:
 
-/* mongoose
+ /*mongoose
   .connect(MONGODB_URI)
   .then((x) => {
     console.log(`Connected to the database: "${x.connection.name}"`);
@@ -37,7 +80,6 @@ manageRecipes();
     return Recipe.deleteMany();
   })
   .then(() => {
-    // Run your code here, after you have insured that the connection was made
   })
   .catch((error) => {
     console.error('Error connecting to the database', error);
